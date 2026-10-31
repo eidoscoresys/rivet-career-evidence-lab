@@ -1,0 +1,22 @@
+{
+  "name": "rivet-career-evidence-lab",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A source-backed, human-reviewed career evidence bridge with a replayable execution workflow",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js",
+    "test": "node --disable-warning=ExperimentalWarning --test tests/*.test.js",
+    "test:browser": "node tests/browser-verification.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#151a1b">
+    <meta name="description" content="Turn real work into defensible qualifications with source-backed career evidence.">
+    <title>RIVET — Career Evidence Lab</title>
+    <link rel="icon" href="/rivet.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/rivet.css">
+    <script src="/rivet-diagrams.js" defer></script>
+    <script src="/rivet.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="RIVET Career Evidence Lab">
+          <span class="brand-mark" aria-hidden="true"><span>R</span></span>
+          <span><strong>RIVET</strong><small>CAREER EVIDENCE LAB</small></span>
+        </a>
+        <div class="topbar-tools">
+          <span class="privacy-note"><span class="status-dot"></span> Private to this browser session</span>
+          <button class="button button-quiet" id="newAnalysisTop" type="button" hidden>New analysis</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="eyebrow">A source-backed career workspace</div>
+          <h1>Your experience is bigger than your job title.</h1>
+          <p>Connect what you have actually done to what a role asks for. Keep transferable work distinct from direct experience, and leave gaps clearly marked.</p>
+        </section>
+
+        <section class="intake panel" id="intakePanel" aria-labelledby="intakeHeading">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">01 / Build an evidence map</div>
+              <h2 id="intakeHeading">Start with your real work.</h2>
+            </div>
+            <button class="button button-outline" id="loadExample" type="button">Load illustrative example</button>
+          </div>
+          <form id="analysisForm">
+            <div class="intake-grid">
+              <section class="input-card" aria-labelledby="experienceHeading">
+                <div class="input-heading">
+                  <span class="input-number">01</span>
+                  <div><h3 id="experienceHeading">Experience evidence</h3><p>Work, projects, and tasks you personally completed.</p></div>
+                </div>
+                <div id="experienceRows" class="experience-rows"></div>
+                <button class="button button-outline add-experience" id="addExperience" type="button">+ Add another experience</button>
+                <label class="field-label" for="skillsInput">Practiced tools or skills <span>Optional</span></label>
+                <input id="skillsInput" name="skills" type="text" maxlength="6000" placeholder="Only skills you have personally practiced">
+              </section>
+
+              <section class="input-card" aria-labelledby="postingHeading">
+                <div class="input-heading">
+                  <span class="input-number">02</span>
+                  <div><h3 id="postingHeading">Opportunity</h3><p>Use a public job posting or paste its description.</p></div>
+                </div>
+                <label class="field-label" for="targetRole">Target role <span>Optional</span></label>
+                <input id="targetRole" name="targetRole" type="text" maxlength="140" placeholder="For example, Facilities Technician">
+                <div class="source-switch" role="radiogroup" aria-label="Job posting source">
+                  <label><input type="radio" name="source" value="paste" checked><span>Paste description</span></label>
+                  <label><input type="radio" name="source" value="url"><span>Public job URL</span></label>
+                </div>
+                <div id="pasteSource">
+                  <label class="field-label" for="jobDescription">Job description</label>
+                  <textarea id="jobDescription" name="description" rows="8" maxlength="30000" placeholder="Paste at least 100 characters from the posting."></textarea>
+                </div>
+                <div id="urlSource" hidden>
+                  <label class="field-label" for="jobUrl">Public HTTPS job URL</label>
+                  <input id="jobUrl" name="url" type="url" maxlength="2000" placeholder="https://example.com/jobs/role">
+                  <p class="field-hint">Some sites block automated reading. If so, paste the posting instead.</p>
+                </div>
+                <label class="test-toggle">
+                  <input id="simulateFailure" type="checkbox">
+                  <span><strong>Simulate an extraction failure</strong><small>Resilience test only. This does not simulate a real job-site or analysis failure.</small></span>
+                </label>
+              </section>
+            </div>
+            <div class="form-footer">
+              <p id="formMessage" class="form-message" role="status" aria-live="polite">Your sources stay attached to this browser session. No qualification is inferred from a job title.</p>
+              <button class="button button-primary button-large" id="analyzeButton" type="submit">Map my evidence <span aria-hidden="true">→</span></button>
+            </div>
+          </form>
+        </section>
+
+        <section class="workspace" id="workspace" hidden aria-label="Career evidence workspace">
+          <div class="workspace-toolbar">
+            <div>
+              <div class="eyebrow">02 / Evidence workspace</div>
+              <h2 id="workspaceTitle">Analysis</h2>
+            </div>
+            <div class="toolbar-actions">
+              <label class="history-picker" for="runHistory">Run history</label>
+              <select id="runHistory" aria-label="Choose a saved analysis"></select>
+              <button class="button button-outline" id="editInputs" type="button">Edit inputs</button>
+              <button class="button button-outline" id="retryButton" type="button" hidden>Retry with saved inputs</button>
+              <button class="button button-outline" id="pasteFallback" type="button" hidden>Paste description instead</button>
+              <button class="button button-outline" id="exportButton" type="button" hidden>Download brief</button>
+            </div>
+          </div>
+
+          <div id="runAlert" class="run-alert" role="status" aria-live="polite" hidden></div>
+
+          <div class="workspace-grid">
+            <section class="panel vault-panel" aria-labelledby="vaultHeading">
+              <div class="panel-heading">
+                <div class="panel-title"><span class="panel-symbol" aria-hidden="true">◈</span><h3 id="vaultHeading">Experience Evidence Vault</h3></div>
+                <span class="micro-label" id="vaultCount"></span>
+              </div>
+              <div id="vaultSources" class="vault-sources"></div>
+              <div class="vault-divider"></div>
+              <div class="requirement-list-heading"><span>Posting requirements</span><span>SUPPORT</span></div>
+              <div id="requirementList" class="requirement-list"></div>
+              <p class="vault-note">A missing link means no match was found in the material submitted. It does not prove you lack the experience.</p>
+            </section>
+
+            <section class="panel bridge-panel" aria-labelledby="bridgeHeading">
+              <div class="panel-heading">
+                <div class="panel-title"><span class="panel-symbol" aria-hidden="true">⌘</span><h3 id="bridgeHeading">Evidence Bridge</h3></div>
+                <span class="micro-label" id="bridgeMeta">Select a requirement</span>
+              </div>
+              <div id="evidenceGraph" class="evidence-graph-shell" aria-label="Interactive source-to-requirement evidence graph"></div>
+              <div id="bridgeDetails" class="bridge-details">
+                <div class="empty-state"><span class="empty-mark">R</span><h3>Every connection needs a source.</h3><p>Select a requirement to inspect its exact experience excerpt, job-posting excerpt, classification, and uncertainty.</p></div>
+              </div>
+            </section>
+
+            <aside class="panel brief-panel" aria-labelledby="briefHeading">
+              <div class="panel-heading">
+                <div class="panel-title"><span class="panel-symbol" aria-hidden="true">▤</span><h3 id="briefHeading">Opportunity Brief</h3></div>
+                <span class="micro-label" id="briefStatus">REVIEW REQUIRED</span>
+              </div>
+              <div id="briefContent" class="brief-content"></div>
+              <div id="reviewGate" class="review-gate" hidden>
+                <label class="review-ack"><input id="reviewAcknowledged" type="checkbox"><span>I reviewed the evidence labels and source excerpts.</span></label>
+                <button class="button button-primary review-submit" id="generateBrief" type="button" disabled>Confirm review &amp; build brief <span aria-hidden="true">→</span></button>
+              </div>
+              <p class="brief-guardrail">Transferable evidence is not a direct qualification, certification, or guarantee of fit.</p>
+            </aside>
+          </div>
+
+          <section class="panel observatory" aria-labelledby="observatoryHeading">
+            <div class="observatory-heading">
+              <div>
+                <div class="panel-title"><span class="panel-symbol" aria-hidden="true">◉</span><h3 id="observatoryHeading">Live Execution Observatory</h3></div>
+                <p id="observatoryStatus">Persisted workflow events · select any step to inspect its details</p>
+              </div>
+              <div class="replay-controls" aria-label="Replay controls">
+                <div class="speed-control" role="group" aria-label="Replay speed">
+                  <button type="button" data-speed="0.5" aria-pressed="false">0.5×</button>
+                  <button type="button" data-speed="1" aria-pressed="true">1×</button>
+                  <button type="button" data-speed="2" aria-pressed="false">2×</button>
+                </div>
+                <button class="icon-button" type="button" id="replayButton" aria-label="Play replay" title="Play replay">▶</button>
+                <button class="icon-button" type="button" id="pauseReplay" aria-label="Pause replay" title="Pause replay">Ⅱ</button>
+                <button class="icon-button" type="button" id="stepReplay" aria-label="Advance one event" title="Advance one event">›|</button>
+              </div>
+            </div>
+            <div id="workflowDiagram" class="workflow-diagram" aria-label="Recorded execution diagram with system boundaries"></div>
+            <div id="eventTimeline" class="event-timeline"></div>
+            <div class="event-inspector" id="eventInspector" aria-live="polite">
+              <strong>Select a persisted event</strong><span>Replay steps, durations, outcome, and failure details are read from the run history.</span>
+            </div>
+            <div class="observatory-foot"><span><i class="status-dot"></i> Events saved to PostgreSQL</span><span id="eventCount">0 events</span><span>Replay uses recorded event order and timing</span></div>
+          </section>
+        </section>
+
+        <section class="history-empty" id="emptyHistory" hidden>
+          <p>Your saved run history will appear here after your first analysis.</p>
+        </section>
+      </main>
+      <footer class="page-footer">
+        <span>RIVET · Career Evidence Lab</span>
+        <span>Evidence in. Clearer next steps out.</span>
+      </footer>
+    </div>
+  </body>
+</html>
